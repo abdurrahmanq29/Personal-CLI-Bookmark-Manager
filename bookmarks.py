@@ -13,7 +13,7 @@ def list_bookmarks():
     except json.JSONDecodeError:
         print("No bookmarks found.")
 
-bookmark_or_create = input("Would you like to access an existing bookmark(a) or\ncreate a new bookmark(b) or\nremove an existing bookmark(c)? (a/b/c): ").strip().lower()
+bookmark_or_create = input("Would you like to access an existing bookmark(a) or\ncreate a new bookmark(b) or\nremove an existing bookmark(c) or\n edit an existing bookmark(d)? (a/b/c/d): ").strip().lower()
 with open("bookmarks.json", "a+") as file:
     if bookmark_or_create == 'a':
         list_bookmarks()
@@ -43,6 +43,23 @@ with open("bookmarks.json", "a+") as file:
                 file.truncate()
                 json.dump(bookmarks, file)
                 print(f"Bookmark '{name}' removed.")
+            else:
+                print(f"No bookmark found with the name '{name}'.")
+        except json.JSONDecodeError:
+            print("No bookmarks found.")
+    elif bookmark_or_create == 'd':
+        list_bookmarks()
+        name = input("Enter the name of the bookmark to edit: ").strip()
+        try:
+            file.seek(0)
+            bookmarks = json.load(file)
+            if name in bookmarks:
+                new_url = input(f"Enter the new URL for '{name}': ").strip()
+                bookmarks[name] = new_url
+                file.seek(0)
+                file.truncate()
+                json.dump(bookmarks, file)
+                print(f"Bookmark '{name}' updated.")
             else:
                 print(f"No bookmark found with the name '{name}'.")
         except json.JSONDecodeError:
